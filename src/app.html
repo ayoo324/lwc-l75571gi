@@ -1,0 +1,156 @@
+<template>
+	<template if:true={showLoadingSpinner}>
+		<lightning-spinner alternative-text="Loading"></lightning-spinner>
+	</template>
+	<lightning-button-group>
+		<lightning-button label="Add Quote" onclick={handleAddQuote}></lightning-button>
+		<lightning-button label="Re-Source" onclick={handleReSource}></lightning-button>
+		<lightning-button label="Order" onclick={handleOrder}></lightning-button>
+	</lightning-button-group>
+	<div style="overflow-x: scroll">
+		<table role="grid" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+			<thead>
+				<tr class="slds-line-height_reset">
+					<th class="tableheader" scope="col">Action</th>
+					<th class="tableheader" scope="col">Status</th>
+					<th class="tableheader" scope="col">Part Name</th>
+					<th class="tableheader" scope="col">VendorName</th>
+					<th class="tableheader" scope="col">QTY</th>
+					<th class="tableheader" scope="col">Part Price</th>
+					<th class="tableheader" scope="col">Core</th>
+					<th class="tableheader" scope="col">Shipping</th>
+					<th class="tableheader" scope="col">Tax</th>
+					<th class="tableheader" scope="col">Total</th>
+					<th class="tableheader" scope="col">ETA (Days)</th>
+					<th class="tableheader" scope="col">Condition</th>
+					<th class="tableheader" scope="col">Mileage</th>
+					<th class="tableheader" scope="col">Warranty</th>
+					<th class="tableheader" scope="col">Other</th>
+					<th class="tableheader" scope="col">Part Quote Number</th>
+					<th class="tableheader" scope="col">Description</th>
+					<th class="tableheader" scope="col">Comments</th>
+				</tr>
+			</thead>
+			<tbody>
+				<lightning-accordion>
+					<template for:each={data} for:item="item">
+						<lightning-accordion-section key={item.partName}>
+							<tr key={item.partNumber} class="slds-hint-parent" aria-selected="true">
+								<td rowspan={item.rowspan}>
+									<div class="slds-col">{item.partNumber}</div>
+								</td>
+								<td rowspan={item.rowspan}>
+									<div class="slds-col">{item.partName}</div>
+								</td>
+							</tr>
+							<template for:each={item.procurementItems} for:item="part">
+								<tr key={part.quoteId}>
+									<td key={part.quoteId}>
+										<div class="slds-col">
+											<lightning-button-menu>
+												<lightning-menu-item label="Edit Quote" data-id={part.quoteId} data-field="editQuote"
+													onclick={handleButtonMenu}></lightning-menu-item>
+												<lightning-menu-item label="Mark As Ordered" data-id={part.quoteId} data-field="markOrdered"
+													onclick={handleButtonMenu}></lightning-menu-item>
+												<lightning-menu-item label="Edit Order" data-id={part.quoteId} data-field="editOrder"
+													onclick={handleButtonMenu}></lightning-menu-item>
+												<lightning-menu-item label="Cancel Order" data-id={part.quoteId} data-field="cancelOrder"
+													onclick={handleButtonMenu}></lightning-menu-item>
+												<lightning-menu-item label="Parts Resolution" data-id={part.quoteId}
+													data-field="partsResolution" onclick={handleButtonMenu}></lightning-menu-item>
+												<lightning-input type="checkbox" data-id={part.quoteId} onclick={handleCheckbox}
+													checked={part.checked}></lightning-input>
+											</lightning-button-menu>
+										</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">
+											<lightning-input checked={part.orderPart} onchange={handleChange} data-id={part.claimItemId}
+												data-name={part.quoteId} type="radio" label="Basic option" name={item.partNumber}
+												variant="label-hidden"></lightning-input>
+										</div>
+									</td>
+									<td key={part.supplierId}>
+										<div class="slds-col">{part.supplier}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">
+											<lightning-formatted-number value={part.price} maximum-fraction-digits="2" format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.partQuantity}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">
+											<lightning-formatted-number value={part.salesTax} maximum-fraction-digits="2"
+												format-style="currency" currency-code="USD"></lightning-formatted-number>
+										</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">
+											<lightning-formatted-number value={part.total} maximum-fraction-digits="2" format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">
+											<lightning-formatted-number value={part.core} maximum-fraction-digits="2" format-style="currency"
+												currency-code="USD"></lightning-formatted-number>
+										</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.condition}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">
+											<lightning-formatted-number value={part.mileage}></lightning-formatted-number>
+										</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.warranty}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.other}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.eta}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.partQuoteNumber}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.quoteNumber}</div>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.searchType}</div>
+									</td>
+									<td key={part.quoteId}>
+										<lightning-formatted-date-time value={part.dateDelivered}></lightning-formatted-date-time>
+									</td>
+									<td key={part.quoteId}>
+										<lightning-formatted-date-time value={part.dateOrdered}></lightning-formatted-date-time>
+									</td>
+									<td key={part.quoteId}>
+										<lightning-formatted-date-time value={part.dateShipped}></lightning-formatted-date-time>
+									</td>
+									<td key={part.quoteId}>
+										<div class="slds-col">{part.comments}</div>
+									</td>
+
+								</tr>
+							</template>
+						</lightning-accordion-section>
+						<!--</tr>-->
+					</template>
+				</lightning-accordion>
+			</tbody>
+		</table>
+
+		<div class="slds-grid slds-grid_align-center slds-p-around_large">
+			<lightning-button variant="brand" label="Save" title="Primary action" onclick={handleClick}
+				class="slds-m-left_x-small"></lightning-button>
+		</div>
+	</div>
+</template>
